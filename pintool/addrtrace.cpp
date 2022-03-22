@@ -358,11 +358,11 @@ ADDRINT execute_commands(const std::string command, short pos,
 }
 
 void *getLogicalAddress(void *ip) {
-    // std::cout << "Converting Virtual IP:     " << (uint64_t)ip  <<std::endl;
+    DEBUG(1)
+        std::cout << "Converting Virtual IP:     " << (uint64_t)ip << std::endl;
     uint64_t *la = static_cast<uint64_t *>(ip);
     if (ip == nullptr) {
         std::cout << " ERROR: dereferenced a nullptr " << std::endl;
-        // assert
         return nullptr;
     }
 
@@ -389,12 +389,6 @@ void *getLogicalAddress(void *ip) {
     }
 
     DEBUG(1) std::cout << "Not classified IP " << (uint64_t)ip << std::endl;
-    /* for (auto i : funcvec) {
-                    if ((uint64_t)ip >= i.baseaddr && (uint64_t)ip <= i.endaddr)
-       { std::cout<< "Missed IP is " << (uint64_t)ip << "Image name is " <<
-       i.name << "Function is " << i.funcname<<std::endl;
-                    }
-            }*/
     return ip;
 }
 
@@ -1263,14 +1257,7 @@ void doalloc(ADDRINT addr, ADDRINT size, uint32_t objid, ADDRINT callsite,
     obj.type = type;
     obj.callstack = callstack;
     calculate_sha1_hash(&obj);
-    /*if (allocmap.count(addr)) {
-      hash.update(allocmap[to_hash.str()].back());
-      allocmap[to_hash.str()].push_back(hash.final());
-      obj->hash = allocmap[to_hash.str()].back();
-      for (auto &i : allocmap[to_hash.str()]) {
-        std::cout <<"Val for the colliding key is " << std::endl;
-     // }
-    } else {*/
+
     if (!old_ptr) {
         allocmap[addr].push_back(obj.hash.substr(32, 8));
     }
@@ -1286,21 +1273,6 @@ void doalloc(ADDRINT addr, ADDRINT size, uint32_t objid, ADDRINT callsite,
             allocmap[addr].push_back(obj.hash.substr(32, 8));
         }
     }
-
-    /*		allocmapfile << setw(25) << addr << " " << setw(25);
-                    auto var = allocmap[addr];
-                    for (auto i : var) {
-                                            allocmapfile << i << " ";
-                    }
-                    allocmapfile << std::endl;
-      //}*/
-    /*for ( auto it : allocmap) {
-            allocmapfile << setw(25) << it.first << " " << setw(25);
-            for (auto i : it.second) {
-                                    allocmapfile << i << " ";
-            }
-            allocmapfile << std::endl;
-    }*/
 
     DEBUG(0)
     std::cout << "doalloc " << std::hex << addr << " " << size << std::endl;
